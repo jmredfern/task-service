@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2015 Jim Redfern.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- read properties from file and properties bean and make them available them in environment -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:taskservice.properties" />
+        <property name="properties" ref="properties"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="searchSystemEnvironment" value="true"/>
+    </bean>
+    
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <value>
+                provisionDatabase=false
+            </value>
+        </property>
+    </bean>    
+    
+    <!-- this bean provides automatic configuration of beans for Spring MVC -->
+    <!--<mvc:annotation-driven />-->
+    
+    <!-- this bean scans the classpath for annotated beans (@Component, @Service) -->
+    <context:component-scan base-package="jmredfern.taskservice"/>
+    
+    <!-- add environment variables to context -->
+    <context:property-placeholder />
+    
+    <!-- this bean sends the Request to the @Controller @RequestMapping -->     
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+    </bean>
+
+    <!-- this bean sends the output from @ResponseBody to messsage converter prior to delivery to HTTP response -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <util:list id="beanList">
+                <ref bean="mappingJackson2HttpMessageConverter"/>
+            </util:list>
+        </property>
+    </bean>
+
+    <!-- this bean converts the output from @ResponseBody to JSON -->
+    <bean id="mappingJackson2HttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="prettyPrint">
+            <value>true</value>
+        </property>
+    </bean>
+    
+    <!-- this bean sends "application/json" media type to JSON rendering view, disabled since we're not using a view -->
+    <!--    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json" />
+            </map>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean name="jsonViewResolver" class="jmredfern.taskservice.controller.JsonViewResolver">
+                </bean>
+            </list>
+        </property>  
+    </bean>-->   
+    
+    <!-- this bean allows Spring to automatically convert a Long id to a Task entity -->
+    <!--    <bean id="conversionService"
+            class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="jmredfern.taskservice.converters.LongToTask"/>
+            </set>
+        </property>
+    </bean>-->
+    
+    <!-- Apache Commons Database Connection Pooling datasource -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/taskservice"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="Fr4de3sw2"/>
+    </bean>
+    
+    <!-- bean post-processor for JPA annotations -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>                
+    
+    <!-- Entity Manager Factory, connected to PostgreSQL via Hibernate -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="packagesToScan" value="jmredfern.taskservice.entities"></property>
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true" />
+                <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>                                
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <prop key="hibernate.connection.charSet">UTF-8</prop>
+            </props>
+        </property>   
+    </bean>   
+       
+    <!-- Transaction Manager -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+ 
+    <!-- enables @Transactional -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <bean class="jmredfern.taskservice.DatabaseProvisioner" p:enabled="${provisionDatabase}" />
+    
+</beans>

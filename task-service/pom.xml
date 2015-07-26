@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2015 Jim Redfern.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>jmredfern</groupId>
+    <artifactId>task-service</artifactId>
+    <version>1.0.0</version>
+    <packaging>war</packaging>
+
+    <name>task-service</name>
+    <description>Task Service</description>
+
+    <!-- Spring IO BOM provides a curated dependencyManagement for the Spring release -->
+    <parent>
+        <groupId>io.spring.platform</groupId>
+        <artifactId>platform-bom</artifactId>
+        <version>1.1.3.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.scm.provider>git</sonar.scm.provider>        
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <!-- Dev Env. Properties -->
+            <properties>
+                <profile.name>${profile.name}</profile.name>
+                <!-- Database Properties -->
+                <db.driverClass>${db.driverClass}</db.driverClass>
+                <db.connectionURL>${db.connectionURL}</db.connectionURL>
+                <db.username>${db.username}</db.username>
+                <db.password>${db.password}</db.password>
+                <!-- JMS Properties -->
+                <jms.factory.initial>${jms.factory.initial}</jms.factory.initial>
+                <jms.provider.url>${jms.provider.url}</jms.provider.url>
+                <jms.queue>${jms.queue}</jms.queue>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <!-- Test Env. Properties -->
+            <properties>
+                <profile.name>${profile.name}</profile.name>
+                <!-- Database Properties -->
+                <db.driverClass>${db.driverClass}</db.driverClass>
+                <db.connectionURL>${db.connectionURL}</db.connectionURL>
+                <db.username>${db.username}</db.username>
+                <db.password>${db.password}</db.password>
+                <!-- JMS Properties -->
+                <jms.factory.initial>${jms.factory.initial}</jms.factory.initial>
+                <jms.provider.url>${jms.provider.url}</jms.provider.url>
+                <jms.queue>${jms.queue}</jms.queue>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <!-- Prod Env. Properties -->
+            <properties>
+                <profile.name>${profile.name}</profile.name>
+                <!-- Database Properties -->
+                <db.driverClass>${db.driverClass}</db.driverClass>
+                <db.connectionURL>${db.connectionURL}</db.connectionURL>
+                <db.username>${db.username}</db.username>
+                <db.password>${db.password}</db.password>
+                <!-- JMS Properties -->
+                <jms.factory.initial>${jms.factory.initial}</jms.factory.initial>
+                <jms.provider.url>${jms.provider.url}</jms.provider.url>
+                <jms.queue>${jms.queue}</jms.queue>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <!-- Spring Core Container -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>                       
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>       
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+        </dependency>   
+        
+        <!-- Spring AOP -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency> 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency> 
+        
+        <!-- Spring Messaging -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency> 
+        
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>        
+
+        <!-- Spring Test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>  
+      
+        <!-- Spring Data Access/Integration -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency> 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        
+        <!-- Database -->            
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>    
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>   
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+        </dependency> 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1201-jdbc41</version>
+        </dependency>                      
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>        
+        </dependency>
+        
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>        
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+
+        <!-- Java API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>        
+       
+        <!-- for Sonar -->
+        <dependency>       
+            <groupId>javax.interceptor</groupId> 
+            <artifactId>javax.interceptor-api</artifactId> 
+            <version>1.2</version> 
+        </dependency>
+<!--        <dependency>
+            <groupId>javax.enterprise</groupId> 
+            <artifactId>cdi-api</artifactId> 
+        </dependency>-->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>      
+       
+        <!-- Unit Testing -->
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>     
+            <version>2.0.0</version>           
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+            <version>2.0.0.0</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>            
+        </dependency>-->
+
+
+    </dependencies>
+	
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.1.v20150714</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>maven-notice-plugin</artifactId>
+                <version>1.0.6.1</version>
+                <configuration>
+                    <noticeTemplate>https://source.jasig.org/licenses/NOTICE.template</noticeTemplate>
+                    <licenseMapping>
+                        <param>https://source.jasig.org/licenses/license-mappings.xml</param>
+                    </licenseMapping>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.5.201505241946</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+        
+</project>
