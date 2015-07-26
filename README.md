@@ -10,9 +10,17 @@ Some core use cases are:
 
 ## Download
 * [Version 1.0.0](https://github.com/jmredfern/task-service/archive/master.zip)
-* Other Versions
+
+## Requirements
+* PostgreSQL 9.4
 
 ## Usage
+The service can be deployed into an embedded Jetty container using the following command:
+
+```$ mvn -Dmaven.skip.test=true -DprovisionDatabase=true -Dfile.encoding=UTF-8 jetty:run -e```
+
+To clone the repo use:
+
 ```$ git clone https://github.com/jmredfern/task-service.git ...```
 
 ### Third party libraries
