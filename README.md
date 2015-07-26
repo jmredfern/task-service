@@ -24,10 +24,10 @@ To clone the repo use:
 ```$ git clone https://github.com/jmredfern/task-service.git```
 
 ### Third party libraries
-* see [NOTICE](https://github.com/jmredfern/task-service/blob/master/NOTICE.md) files
+* see [NOTICE](https://github.com/jmredfern/task-service/blob/master/task-service/NOTICE) file
 
 ## License
-* see [LICENSE](https://github.com/jmredfern/task-service/blob/master/LICENSE.md) file
+* see [LICENSE](https://github.com/jmredfern/task-service/blob/master/task-service/LICENSE) file
 
 ## Version
 * Version 1.0.0
