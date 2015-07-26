@@ -21,7 +21,7 @@ The service can be deployed into an embedded Jetty container using the following
 
 To clone the repo use:
 
-```$ git clone https://github.com/jmredfern/task-service.git ...```
+```$ git clone https://github.com/jmredfern/task-service.git```
 
 ### Third party libraries
 * see [NOTICE](https://github.com/jmredfern/task-service/blob/master/NOTICE.md) files
