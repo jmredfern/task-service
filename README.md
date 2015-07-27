@@ -23,10 +23,10 @@ The service will be available at:
 
 http://localhost:8080/service/
 
-User id 1 & 2 will be pre-provisioned.
+User id 1 & 2 will be pre-provisioned, along with 2 Platform Objects and 3 Tasks.
 
 | HTTP operation | URL                                  | Function                   |
-| -------------- |:------------------------------------:| --------------------------:|
+|:-------------- |:------------------------------------ |:-------------------------- |
 | **GET**        | /service/user/{userId}/task          | list all tasks for a user  |
 | **GET**        | /service/user/{userId}/task/{taskId} | retrieve a task for a user |
 | **POST**       | /service/user/{userId}/task          | create a task for a user   |
