@@ -19,15 +19,19 @@ The service can be deployed into an embedded Jetty container using the following
 
 ```$ mvn -Dmaven.skip.test=true -DprovisionDatabase=true -Dfile.encoding=UTF-8 jetty:run -e```
 
+The service will be available at:
+
+http://localhost:8080/service/
+
 User id 1 & 2 will be pre-provisioned.
 
-| HTTP operation | URL                                                       | Function                   |
-| -------------- |:---------------------------------------------------------:| --------------------------:|
-| **GET**        | http://localhost:8080/service/user/{userId}/task          | list all tasks for a user  |
-| **GET**        | http://localhost:8080/service/user/{userId}/task/{taskId} | retrieve a task for a user |
-| **POST**       | http://localhost:8080/service/user/{userId}/task          | create a task for a user   |
-| **PUT**        | http://localhost:8080/service/user/{userId}/task          | update a task for a user   |
-| **DELETE**     | http://localhost:8080/service/user/{userId}/task          | delete a task for a user   |
+| HTTP operation | URL                                  | Function                   |
+| -------------- |:------------------------------------:| --------------------------:|
+| **GET**        | /service/user/{userId}/task          | list all tasks for a user  |
+| **GET**        | /service/user/{userId}/task/{taskId} | retrieve a task for a user |
+| **POST**       | /service/user/{userId}/task          | create a task for a user   |
+| **PUT**        | /service/user/{userId}/task          | update a task for a user   |
+| **DELETE**     | /service/user/{userId}/task          | delete a task for a user   |
 
 To clone the repo use:
 
