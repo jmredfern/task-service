@@ -33,7 +33,7 @@ User id 1 & 2 will be pre-provisioned, along with 2 Platform Objects and 3 Tasks
 | **PUT**        | /service/user/{userId}/task          | update a task for a user   |
 | **DELETE**     | /service/user/{userId}/task          | delete a task for a user   |
 
-PostgreSQL should be configured with a Database called 'taskservice' and the username and password added to the dataSource bean in the file: '/task-service/src/main/webapp/WEB-INF/taskservice-servlet.xml'
+PostgreSQL should be configured with a database called 'taskservice' and the username and password added to the dataSource bean in the file: '/task-service/src/main/webapp/WEB-INF/taskservice-servlet.xml'
 
 To clone the repo use:
 
